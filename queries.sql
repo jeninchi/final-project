@@ -1,5 +1,5 @@
 -- Final Exam: SQL-- Our analysis is based on two datasets: Taxi and Weather. The Taxi dataset was initially obtained via an API, processed in Python, and underwent exploratory data analysis (EDA) and cleaning before being imported into Snowflake. A key transformation applied was rounding timestamps to the nearest hour, which enables accurate joins with the weather data. The Weather dataset was sourced from Open-Meteo, providing historical weather conditions such as temperature and precipitation. This structured approach allows us to analyze how weather impacts taxi rides, fares, and tipping behavior.
--- Inspection
+-- Query 1: Inspection
 -- Here, we are looking at the first 10 rows of each table. 
 SELECT * FROM TAXI.PUBLIC.TAXI LIMIT 10; 
 SELECT * FROM TAXI.PUBLIC.WEATHER LIMIT 10; -- Query 1: Counting total rides per hour by date
@@ -100,7 +100,9 @@ JOIN TAXI.PUBLIC.WEATHER w
 ON t.ROUNDED_DATETIME = w.TIME
 GROUP BY CUBE(1,2)
 ORDER BY avg_fare DESC NULLS LAST;-- Using CUBE, this query generates subtotal aggregations of average fare across different temperature categories and hours.
--- In addition to time of the day, temperature adds another factor that may affect average fare. For instance, we see that our dataset's highest average fare is 6 am at below-freezing temperatures. -- Query 9: Subquery 1 - Finding the most expensive fare per mile by hour of day
+-- In addition to time of the day, temperature adds another factor that may affect average fare. For instance, we see that our dataset's highest average fare is 6 am at below-freezing temperatures. 
+
+-- Query 9: Subquery 1 - Finding the most expensive fare per mile by hour of day
 SELECT hour_of_day, avg_trip_distance, avg_fare_per_mile, avg_total_amount
 FROM (
     SELECT EXTRACT(HOUR FROM ROUNDED_DATETIME) AS hour_of_day,
